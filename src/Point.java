@@ -54,6 +54,17 @@ public class Point {
 		);
 	}
 	
+	static Point average( Point p[] ) {
+		double x = 0, y = 0;
+		for ( int i = 0; i < p.length; ++i ) {
+			x += p[i].x;
+			y += p[i].y;
+		}
+		x /= p.length;
+		y /= p.length;
+		return new Point( x, y );
+	}
+	
 	static Point average( Point []p, double []w ) {
 /*		for ( int i = 0; i < p.length; ++i ) {
 			if ( w[i] > 1e10 ) return p[i];
@@ -67,6 +78,21 @@ public class Point {
 		return new Point( sx / sw, sy / sw );
 //		return null;
 	}
+	
+	static double[] TriangleContainsPoint( final Point a, final Point b, final Point c, final Point o) {
+		double xa = a.x - o.x, ya = a.y - o.y;
+		double xb = b.x - o.x, yb = b.y - o.y;
+		double xc = c.x - o.x, yc = c.y - o.y;
+		
+		double d = xb * yc -    xc * yb;
+		double d1 = -xa * yc -  xc * -ya;
+		double d2 = xb * -ya - -xa * yb;
+		
+		return new double[]{1, d1/d, d2/d};
+		
+//		return null;
+	}
+	
 	/*
 	double DistanceTo( final Point o ) {
 		return Math.hypot( x - o.x , y - o.y);

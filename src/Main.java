@@ -94,7 +94,7 @@ public class Main extends JFrame {
 		
 		scale = Math.min( 1.0 ,  scale * 0.9 );
 		
-		scale *= 0.5; //TODO
+//		scale *= 0.5; //TODO
 		
 		System.out.println( "scale = " + scale );
 		
@@ -233,7 +233,11 @@ class ConvertKeyListener implements KeyListener {
 		}
 		if ( e.getKeyChar() == KeyEvent.VK_SPACE ) {
 			parent.fDrawGrid = !parent.fDrawGrid;
-			parent.draw( parent.img, parent.lastGrid ); //TODO
+			if ( parent.q != null ) {
+				parent.draw( parent.img, parent.q, null, false, parent.lastGrid );				
+			} else {
+				parent.draw( parent.img, parent.lastGrid ); //TODO				
+			}
 		}
 	}
 	@Override
