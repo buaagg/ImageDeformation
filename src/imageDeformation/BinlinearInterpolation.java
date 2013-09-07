@@ -8,10 +8,13 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 
+import JavaHelper.BufferedImageHelper;
+
 public class BinlinearInterpolation {
 	int width = 0;
 	int height = 0;
 	BufferedImage target = null, source = null;
+	static final ColorModel cm = ColorModel.getRGBdefault();
 	
 	public BufferedImage generate( BufferedImage target, final BufferedImage source, final Grid []fromGrid, final Grid []toGrid) {
 		assert( source != null );
@@ -21,8 +24,7 @@ public class BinlinearInterpolation {
 		height = source.getHeight();
 
 		if ( target == null || target == source || target.getWidth() != width || target.getHeight() != height ) {
-			this.target = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
-			System.out.printf( "operator new: %d x %d matrix%n", width, height );
+			this.target = BufferedImageHelper.newBufferdImage(width, height);
 		} else {
 			this.target = target;
 		}
@@ -79,25 +81,25 @@ public class BinlinearInterpolation {
 		int rgb12 = source.getRGB(x1, y2); 
 		int rgb22 = source.getRGB(x2, y2); 
 		
-		int r11 = ColorModel.getRGBdefault().getRed(rgb11);
-		int r12 = ColorModel.getRGBdefault().getRed(rgb12);
-		int r21 = ColorModel.getRGBdefault().getRed(rgb21);
-		int r22 = ColorModel.getRGBdefault().getRed(rgb22);
+		int r11 = cm.getRed(rgb11);
+		int r12 = cm.getRed(rgb12);
+		int r21 = cm.getRed(rgb21);
+		int r22 = cm.getRed(rgb22);
 
-		int g11 = ColorModel.getRGBdefault().getGreen(rgb11);
-		int g12 = ColorModel.getRGBdefault().getGreen(rgb12);
-		int g21 = ColorModel.getRGBdefault().getGreen(rgb21);
-		int g22 = ColorModel.getRGBdefault().getGreen(rgb22);
+		int g11 = cm.getGreen(rgb11);
+		int g12 = cm.getGreen(rgb12);
+		int g21 = cm.getGreen(rgb21);
+		int g22 = cm.getGreen(rgb22);
 
-		int b11 = ColorModel.getRGBdefault().getBlue(rgb11);
-		int b12 = ColorModel.getRGBdefault().getBlue(rgb12);
-		int b21 = ColorModel.getRGBdefault().getBlue(rgb21);
-		int b22 = ColorModel.getRGBdefault().getBlue(rgb22);
+		int b11 = cm.getBlue(rgb11);
+		int b12 = cm.getBlue(rgb12);
+		int b21 = cm.getBlue(rgb21);
+		int b22 = cm.getBlue(rgb22);
 
-		int a11 = ColorModel.getRGBdefault().getAlpha(rgb11);
-		int a12 = ColorModel.getRGBdefault().getAlpha(rgb12);
-		int a21 = ColorModel.getRGBdefault().getAlpha(rgb21);
-		int a22 = ColorModel.getRGBdefault().getAlpha(rgb22);
+		int a11 = cm.getAlpha(rgb11);
+		int a12 = cm.getAlpha(rgb12);
+		int a21 = cm.getAlpha(rgb21);
+		int a22 = cm.getAlpha(rgb22);
 		
 		double r = r11 * (x2 - x) * (y2 - y) + r21 * (x - x1) * (y2 - y) + r12 * (x2 - x) * (y - y1) + r22 * (x - x1) * (y - y1);
 		double g = g11 * (x2 - x) * (y2 - y) + g21 * (x - x1) * (y2 - y) + g12 * (x2 - x) * (y - y1) + g22 * (x - x1) * (y - y1);

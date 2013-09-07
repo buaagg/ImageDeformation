@@ -16,8 +16,9 @@ public class SimilarityDeformation implements ImageDeformation {
 		if ( null == A || A.length < n ) A = new Matrix22[n];
 		
 		for ( int i = 0; i < n; ++i ) {
-			Point t = p[i].subtract( v );
-			w[i] = Math.pow( t.x * t.x + t.y * t.y , -alpha );
+			double tx = p[i].x - v.x;
+			double ty = p[i].y - v.y;
+			w[i] = Math.pow( tx * tx + ty * ty , -alpha );
 		}
 		Point pAverage = Point.average( p, w );
 		Point qAverage = Point.average( q, w );

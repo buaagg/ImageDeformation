@@ -24,6 +24,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 
+import JavaHelper.BufferedImageHelper;
+
 
 public class Main extends JFrame {
 	/**
@@ -36,6 +38,8 @@ public class Main extends JFrame {
 	public ConvertKeyListener convertKeyListener = new ConvertKeyListener(this);
 	BufferedImage img;
 	BufferedImage oriImg;
+	BufferedImage displayImg;
+	int width, height;
 	public JLabel label;
 	public int status = 0;
 	Point []p = new Point[0];
@@ -44,7 +48,7 @@ public class Main extends JFrame {
 	
 	public Main() {
 		String osName = System.getProperty("os.name");
-		System.out.println( osName );
+		System.out.println( "You are running on " + osName );
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		this.setTitle("AffineDeformation");
@@ -67,7 +71,6 @@ public class Main extends JFrame {
 				
 				public boolean accept(File file) {					
 					if ( judge(file.getName()) || file.isDirectory() ) {
-//						System.out.println( file.getName() );
 						return true;
 					} else {
 						return false;						
@@ -85,7 +88,7 @@ public class Main extends JFrame {
 			System.exit(HIDE_ON_CLOSE);
 		}
 		
-		System.out.println( FileName );
+		System.out.println( "The source file path is " + FileName );
 		
 		BufferedImage src = null;
 		try {			
@@ -102,15 +105,12 @@ public class Main extends JFrame {
 		
 		scale = Math.min( 1.0 ,  scale * 0.9 );
 		
-//		scale *= 0.5; //TODO
-		
 		System.out.println( "scale = " + scale );
 		
-		
-		img = new BufferedImage( 
-				(int)(src.getWidth() * scale), 
-				(int)(src.getHeight() * scale), 
-				BufferedImage.TYPE_INT_ARGB );
+		this.width = (int)(src.getWidth() * scale);
+		this.height = (int)(src.getHeight() * scale);
+				
+		img = BufferedImageHelper.newBufferdImage(width, height);
 		
 		Graphics2D graph = (Graphics2D) img.getGraphics();
 		graph.scale(scale, scale);
@@ -127,7 +127,6 @@ public class Main extends JFrame {
 		this.setSize( img.getWidth() + 30, img.getHeight() + 50  );  
 		this.setVisible(true);  		
 		
-//		g = new Grid[ (img.getWidth() / 10) * ( img.getHeight() / 10) ];
 		Vector<Grid> vg = new Vector<Grid>();
 		for ( int i = 0; i < img.getWidth(); i += Config.gridLength ) {
 			for ( int j = 0; j < img.getHeight(); j += Config.gridLength ) {
@@ -142,10 +141,7 @@ public class Main extends JFrame {
 			}
 		}
 		g = vg.toArray( new Grid[ vg.size() ] );
-		System.out.println(g.length);
-		
-//		label.addMouseListener( gMouseAdapter );
-//		label.addMouseMotionListener(gMouseAdapter);	
+		System.out.println( "Totally splited into " + g.length + " grids.");
 		
 		this.draw( this.img, this.g );
 		
@@ -161,15 +157,23 @@ public class Main extends JFrame {
 	public void draw(BufferedImage img, Point p[], Point q, boolean qOK, Grid []grid) {
 		this.img = img;
 		
-		img = new BufferedImage(img.getWidth(), img.getHeight(), 
-				BufferedImage.TYPE_INT_ARGB );
+		if ( displayImg == null || displayImg.getWidth() != img.getWidth() || displayImg.getHeight() != img.getHeight() ) {
+			displayImg = BufferedImageHelper.newBufferdImage(width, height);
+		} else {
+			for ( int i = 0; i < this.width; ++i ) {
+				for ( int j = 0; j < this.height; ++j ) {
+					this.displayImg.setRGB(i, j, 0);
+				}
+			}
+		}
+		img = displayImg;		
 
 		Graphics2D graph = (Graphics2D) img.getGraphics();
 		
 		graph.drawImage( this.img,  0, 0, null );
 		graph.setStroke( new BasicStroke((2.0f) ));
 		graph.setColor( Color.RED );
-//		System.out.println( p.length );
+
 		for ( int i = 0; i < p.length; ++i ) {
 			graph.drawLine( (int)(p[i].x - 10), (int)(p[i].y - 10), 
 							(int)(p[i].x + 10), (int)(p[i].y + 10));
@@ -203,7 +207,6 @@ public class Main extends JFrame {
 				graph.drawLine(  (int)g.p[3].x , (int)g.p[3].y, (int)g.p[0].x, (int)g.p[0].y);
 			}
 		}
-
 		
 		graph.dispose();
 		
@@ -225,7 +228,7 @@ class ConvertKeyListener implements KeyListener {
 	public void keyTyped(KeyEvent e) {
 		if ( e.getKeyChar() == KeyEvent.VK_ENTER && parent.status == 0 ) {
 			parent.status = 1;
-			System.out.println("MM");
+			System.out.println("Convert from stage 1 to stage 2");
 //			parent.removeKeyListener( parent.convertKeyListener );
 			parent.label.removeMouseListener( parent.sillyMouseAdapter );
 			parent.label.removeMouseMotionListener( parent.sillyMouseAdapter );

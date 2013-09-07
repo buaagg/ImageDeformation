@@ -13,21 +13,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 
 class GMouseAdapter extends MouseAdapter {
-//	ImageDeformation def = new AffineDeformation();
-//	ImageDeformation def = new SimilarityDeformation();
-//	ImageDeformation def = new RigidDeformation();
-
-	
-	public void mouseClicked(MouseEvent e) {
-//		parent.draw( parent.img, parent.q, null, true, parent.gTrans );
-	}
-	
-	int currentPointIndex = -1;
-	
-	public void mousePressed(MouseEvent e) {
-		
+	public void mousePressed(MouseEvent e) {		
 		Point []q = parent.q;
-//		System.out.printf( "Silly Pressed on (%d, %d)%n", e.getX(), e.getY() );	
 		
 		Point r = new Point( e.getX(), e.getY() );
 		for ( int i = 0; i < q.length; ++i ) {
@@ -39,8 +26,7 @@ class GMouseAdapter extends MouseAdapter {
 		}
 	}
 		
-	void work(Point q) {
-		
+	void work(Point q) {		
 		parent.q[currentPointIndex] = q;
 		
 		Grid []newG = new Grid[ parent.g.length ];
@@ -60,12 +46,10 @@ class GMouseAdapter extends MouseAdapter {
 		parent.draw( newImg, parent.q, q, true, parent.gTrans );		
 	}
 	public void mouseDragged(MouseEvent e) {
-//		System.out.printf( "Drag on (%d, %d)%n", e.getX(), e.getY() );
 		Point r = new Point( e.getX(), e.getY() );
 		work(r);
 	}
 	public void mouseReleased(MouseEvent e) {
-//		System.out.printf( "Drag on (%d, %d)%n", e.getX(), e.getY() );
 		if ( this.currentPointIndex != -1 ) {
 			Point r = new Point( e.getX(), e.getY() );
 			work(r);			
@@ -76,5 +60,8 @@ class GMouseAdapter extends MouseAdapter {
 	GMouseAdapter(Main parent) {
 		this.parent = parent;
 	}
-	Main parent;
+	
+	private Main parent;
+	private int currentPointIndex = -1;
+	
 }
