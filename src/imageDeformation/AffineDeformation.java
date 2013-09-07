@@ -1,17 +1,20 @@
+package imageDeformation;
+import geometry.Matrix22;
+import geometry.Point;
 
 
-
-public class AffineDeformation implements Deformation {
+public class AffineDeformation implements ImageDeformation {
 
 	@Override
 	public Point query(Point v, Point[] p, Point[] q, double alpha) {
 		assert( p.length == q.length );
 		
 		int n = p.length;
-		double []w = new double[n];
-		Point []pRelative = new Point[n];
-		Point []qRelative = new Point[n];
-		double []A = new double[n];
+		
+		if ( null == w || w.length < n ) w = new double[n];
+		if ( null == pRelative || pRelative.length < n ) pRelative = new Point[n];
+		if ( null == qRelative || qRelative.length < n ) qRelative = new Point[n];
+		if ( null == A || A.length < n ) A = new double[n];
 		
 		for ( int i = 0; i < n; ++i ) {
 			Point t = p[i].subtract( v );
@@ -30,20 +33,7 @@ public class AffineDeformation implements Deformation {
 			B = B.add( pRelative[i].ThisTransposeMultiplyOtherMultiplyThis(w[i]) );
 		}
 		
-//		assert( B.Inverse().multiply( B ).equals( Matrix22.E ) );
-		
-		B = B.Inverse();
-		
-		/*
-		do {
-			Matrix22 C = Matrix22.ZERO;
-			for ( int j = 0; j < n; ++j ) {
-				C = C.add( pRelative[j].ThisTransposeMultiplyOther(qRelative[j]).multiply(w[j]) );
-			}
-			Matrix22 M = B.multiply(C);
-			assert( M.equals(M.E) );
-//			M.print();
-		} while (false);*/
+		B = B.inverse();
 		
 		for ( int j = 0; j < n; ++j ) {
 			A[j] = v.subtract(pAverage).multiply(B).multiplyOtherTranspose(pRelative[j]) * w[j];
@@ -56,4 +46,9 @@ public class AffineDeformation implements Deformation {
 		
 		return r;
 	}
+	
+	double []w = null;
+	Point[] pRelative = null;
+	Point[] qRelative = null;
+	double []A = null;
 }

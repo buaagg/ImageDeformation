@@ -1,7 +1,8 @@
+package geometry;
+
 
 public class Grid {
 	public Point []p;
-//	public int []c;
 	
 	public Grid(Point p0, Point p1, Point p2, Point p3) {
 		p = new Point[4];

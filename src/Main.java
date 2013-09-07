@@ -1,3 +1,9 @@
+import geometry.Grid;
+import geometry.Point;
+import imageDeformation.AffineDeformation;
+import imageDeformation.RigidDeformation;
+import imageDeformation.SimilarityDeformation;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -41,7 +47,9 @@ public class Main extends JFrame {
 		System.out.println( osName );
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JFileChooser fileChooser = new JFileChooser( osName.toLowerCase().startsWith("win") ? "d:" : "" );
+		this.setTitle("AffineDeformation");
+		
+		JFileChooser fileChooser = new JFileChooser( "." );
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setFileFilter (
 			new FileFilter() {
@@ -238,6 +246,70 @@ class ConvertKeyListener implements KeyListener {
 			} else {
 				parent.draw( parent.img, parent.lastGrid ); //TODO				
 			}
+		}
+		if ( e.getKeyChar() == KeyEvent.VK_NUMPAD1 || e.getKeyChar() == KeyEvent.VK_1 ) {
+			Config.imageDeformation = new AffineDeformation();
+			parent.setTitle("AffineDeformation");
+
+			if ( parent.q != null ) {
+				Grid []newG = new Grid[ parent.g.length ];
+				for ( int i = 0; i < parent.g.length; ++i ) {
+					newG[i] = new Grid(
+							Config.imageDeformation.query( parent.g[i].p[0] , parent.p, parent.q, Config.alpha),
+							Config.imageDeformation.query( parent.g[i].p[1] , parent.p, parent.q, Config.alpha),
+							Config.imageDeformation.query( parent.g[i].p[2] , parent.p, parent.q, Config.alpha),
+							Config.imageDeformation.query( parent.g[i].p[3] , parent.p, parent.q, Config.alpha)
+					);
+				}
+				
+				parent.gTrans = newG;
+				
+				BufferedImage newImg = Config.binlinearInterpolation.generate(parent.img, parent.oriImg, parent.g, parent.gTrans);		
+				parent.draw( newImg, parent.q, null, false, parent.gTrans );		
+			}
+		}
+		if ( e.getKeyChar() == KeyEvent.VK_NUMPAD2 || e.getKeyChar() == KeyEvent.VK_2 ) {
+			Config.imageDeformation = new SimilarityDeformation();
+			parent.setTitle("SimilarityDeformation");
+
+			if ( parent.q != null ) {
+				Grid []newG = new Grid[ parent.g.length ];
+				for ( int i = 0; i < parent.g.length; ++i ) {
+					newG[i] = new Grid(
+							Config.imageDeformation.query( parent.g[i].p[0] , parent.p, parent.q, Config.alpha),
+							Config.imageDeformation.query( parent.g[i].p[1] , parent.p, parent.q, Config.alpha),
+							Config.imageDeformation.query( parent.g[i].p[2] , parent.p, parent.q, Config.alpha),
+							Config.imageDeformation.query( parent.g[i].p[3] , parent.p, parent.q, Config.alpha)
+					);
+				}
+				
+				parent.gTrans = newG;
+				
+				BufferedImage newImg = Config.binlinearInterpolation.generate(parent.img, parent.oriImg, parent.g, parent.gTrans);		
+				parent.draw( newImg, parent.q, null, false, parent.gTrans );		
+			}
+}
+		if ( e.getKeyChar() == KeyEvent.VK_NUMPAD3 || e.getKeyChar() == KeyEvent.VK_3 ) {
+			Config.imageDeformation = new RigidDeformation();
+			parent.setTitle("RigidDeformation");
+
+			if ( parent.q != null ) {
+				Grid []newG = new Grid[ parent.g.length ];
+				for ( int i = 0; i < parent.g.length; ++i ) {
+					newG[i] = new Grid(
+							Config.imageDeformation.query( parent.g[i].p[0] , parent.p, parent.q, Config.alpha),
+							Config.imageDeformation.query( parent.g[i].p[1] , parent.p, parent.q, Config.alpha),
+							Config.imageDeformation.query( parent.g[i].p[2] , parent.p, parent.q, Config.alpha),
+							Config.imageDeformation.query( parent.g[i].p[3] , parent.p, parent.q, Config.alpha)
+					);
+				}
+				
+				parent.gTrans = newG;
+				
+				BufferedImage newImg = Config.binlinearInterpolation.generate(parent.img, parent.oriImg, parent.g, parent.gTrans);		
+				parent.draw( newImg, parent.q, null, false, parent.gTrans );		
+			}
+		
 		}
 	}
 	@Override

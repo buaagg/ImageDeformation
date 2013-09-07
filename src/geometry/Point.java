@@ -1,20 +1,24 @@
+package geometry;
+
+
+
 public class Point {
 	public final double x, y;
 	
-	Point(double x, double y) {
+	public Point(double x, double y) {
 		this.x = x;
 		this.y = y;		
 	}
 	
-	Point add( final Point o ) {
+	public Point add( final Point o ) {
 		return new Point( x + o.x, y + o.y );
 	}
 	
-	Point subtract( final Point o ) {
+	public Point subtract( final Point o ) {
 		return new Point( x - o.x, y - o.y );
 	}
 	
-	static double cross(final Point a, final Point b, final Point c) {
+	public static double cross(final Point a, final Point b, final Point c) {
 		return b.subtract(a).cross(c.subtract(a));
 	}
 	
@@ -22,7 +26,15 @@ public class Point {
 		return x * o.y - y * o.x;
 	}
 	
-	Matrix22 ThisTransposeMultiplyOtherMultiplyThis(double w) {
+	public Point negate() {
+		return new Point(-x, -y);
+	}
+	
+	public double length() {
+		return Math.hypot(x, y);
+	}
+	
+	public Matrix22 ThisTransposeMultiplyOtherMultiplyThis(double w) {
 		return new Matrix22(
 			x * x * w, x * y * w,
 			y * x * w, y * y * w 
@@ -37,18 +49,18 @@ public class Point {
 	}
 
 	
-	double multiplyOtherTranspose( final Point o ) {
+	public double multiplyOtherTranspose( final Point o ) {
 		return x * o.x + y * o.y;
 	}
 	
 	
-	Point multiply( final Matrix22 o ) {
+	public Point multiply( final Matrix22 o ) {
 		return new Point(
 			x * o.M11 + y * o.M21, x * o.M12 + y * o.M22
 		);
 	}
 	
-	Point multiply( double o ) {
+	public Point multiply( double o ) {
 		return new Point(
 			x * o, y * o
 		);
@@ -65,7 +77,7 @@ public class Point {
 		return new Point( x, y );
 	}
 	
-	static Point average( Point []p, double []w ) {
+	public static Point average( Point []p, double []w ) {
 /*		for ( int i = 0; i < p.length; ++i ) {
 			if ( w[i] > 1e10 ) return p[i];
 		}*/
@@ -79,7 +91,7 @@ public class Point {
 //		return null;
 	}
 	
-	static double[] TriangleContainsPoint( final Point a, final Point b, final Point c, final Point o) {
+	public static double[] TriangleContainsPoint( final Point a, final Point b, final Point c, final Point o) {
 		double xa = a.x - o.x, ya = a.y - o.y;
 		double xb = b.x - o.x, yb = b.y - o.y;
 		double xc = c.x - o.x, yc = c.y - o.y;
@@ -98,7 +110,7 @@ public class Point {
 		return Math.hypot( x - o.x , y - o.y);
 	}*/
 	
-	double InfintyNormDistanceTo( final Point o ) {
+	public double InfintyNormDistanceTo( final Point o ) {
 		return Math.max( Math.abs(x - o.x), Math.abs(y - o.y) );
 	}
 	
@@ -106,5 +118,14 @@ public class Point {
 		return x == o.x && y == o.y;
 	}
 
+	public Point orthogonal() {
+		return new Point(-y, x);
+	}
+
+	public Point divide(double mus) {
+		return this.multiply( 1.0 / mus );
+	}
+	
+	public static Point ZERO = new Point(0, 0);
 }
 

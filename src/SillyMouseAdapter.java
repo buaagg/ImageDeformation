@@ -1,3 +1,5 @@
+import geometry.Point;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
