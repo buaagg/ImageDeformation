@@ -88,7 +88,6 @@ public class Point {
 			sw += w[i];
 		}
 		return new Point( sx / sw, sy / sw );
-//		return null;
 	}
 	
 	public static double[] TriangleContainsPoint( final Point a, final Point b, final Point c, final Point o) {
@@ -101,8 +100,6 @@ public class Point {
 		double d2 = xb * -ya - -xa * yb;
 		
 		return new double[]{1, d1/d, d2/d};
-		
-//		return null;
 	}
 	
 	/*
@@ -115,7 +112,11 @@ public class Point {
 	}
 	
 	boolean equals( final Point o ) {
-		return x == o.x && y == o.y;
+		return Math.abs(x - o.x) < Util.eps && Math.abs(y - o.y) < Util.eps;
+	}
+	
+	public boolean equals( double x, double y ) {
+		return Math.abs(this.x - x) < Util.eps && Math.abs(this.y - y) < Util.eps;
 	}
 
 	public Point orthogonal() {
@@ -124,6 +125,15 @@ public class Point {
 
 	public Point divide(double mus) {
 		return this.multiply( 1.0 / mus );
+	}
+	
+	public String toString() {
+		String s = "(";
+		s += String.format("%.2f", x);
+		s += ",";
+		s += String.format("%.2f", y);
+		s += ")";
+		return s;
 	}
 	
 	public static Point ZERO = new Point(0, 0);

@@ -1,7 +1,8 @@
+package viewer;
+
 import imageDeformation.AffineDeformation;
 import imageDeformation.BinlinearInterpolation;
 import imageDeformation.ImageDeformation;
-
 
 public class Config {
 	public static final double alpha = 1;

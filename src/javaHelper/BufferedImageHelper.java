@@ -1,4 +1,4 @@
-package JavaHelper;
+package javaHelper;
 import java.awt.image.BufferedImage;
 
 

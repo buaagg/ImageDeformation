@@ -1,12 +1,20 @@
 package geometry;
 
-
 public class Grid {
 	public Point []p;
 	
 	public Grid(Point p0, Point p1, Point p2, Point p3) {
 		p = new Point[4];
 		p[0] = p0; p[1] = p1; p[2] = p2; p[3] = p3;
+	}
+	
+	public String toString() {
+		String s = "{";
+		for ( int i = 0; i < p.length; ++i ) {
+			s += p[i].toString();
+		}
+		s += "}";
+		return s;
 	}
 	
 	public boolean contains(int i, int j) {
