@@ -1,18 +1,19 @@
 package viewer;
 
-import geometry.Grid;
+import geometry.Lattice;
 import geometry.Point;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
 import javaHelper.BufferedImageHelper;
 
 public class DisplayImageFactory {
 	static private BufferedImage displayImg = null;
 
-	public static BufferedImage getDisplayImage(BufferedImage currentImg, Grid []currentGrid, Point []currentKeyPoints, 
+	public static BufferedImage getDisplayImage(BufferedImage currentImg, Lattice currentLattice, Point []currentKeyPoints, 
 			Point activeKeyPoint, boolean isActiveKeyPointSpecial, boolean isGridVisible) 
 	{		
 		if ( displayImg == null || displayImg.getWidth() != currentImg.getWidth() || displayImg.getHeight() != currentImg.getHeight() ) {
@@ -53,14 +54,18 @@ public class DisplayImageFactory {
 			graph.drawLine(displayImg.getWidth(), 0, 0, 0 );			
 		} while (false);
 		
-		if ( currentGrid != null && isGridVisible ) {
+		if ( currentLattice != null && isGridVisible ) {
 			graph.setStroke( new BasicStroke((1.0f) ));
-			graph.setColor( Color.GRAY );
-			for ( Grid g : currentGrid ) {
-				graph.drawLine(  (int)g.p[0].x , (int)g.p[0].y, (int)g.p[1].x, (int)g.p[1].y);
-				graph.drawLine(  (int)g.p[1].x , (int)g.p[1].y, (int)g.p[2].x, (int)g.p[2].y);
-				graph.drawLine(  (int)g.p[2].x , (int)g.p[2].y, (int)g.p[3].x, (int)g.p[3].y);
-				graph.drawLine(  (int)g.p[3].x , (int)g.p[3].y, (int)g.p[0].x, (int)g.p[0].y);				
+			graph.setColor( Color.gray );
+			for ( int i = 0; i < currentLattice.getXCount(); ++i ) {
+				for ( int j = 0; j < currentLattice.getYCount(); ++j ) {
+					if ( i - 1 >= 0 ) graph.drawLine( 
+							(int)currentLattice.data[(i-1) * currentLattice.getYCount() + j].x, (int)currentLattice.data[(i-1) * currentLattice.getYCount() + j].y, 
+							(int)currentLattice.data[i * currentLattice.getYCount() + j].x, (int)currentLattice.data[i * currentLattice.getYCount() + j].y);
+					if ( j - 1 >= 0 ) graph.drawLine( 
+							(int)currentLattice.data[i * currentLattice.getYCount() + (j-1)].x, (int)currentLattice.data[i * currentLattice.getYCount() + (j-1)].y, 
+							(int)currentLattice.data[i * currentLattice.getYCount() + j].x, (int)currentLattice.data[i * currentLattice.getYCount() + j].y);
+				}
 			}
 		}
 		

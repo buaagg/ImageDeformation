@@ -1,10 +1,11 @@
 package imageDeformation;
 
-import geometry.Grid;
+import geometry.Lattice;
 import geometry.Point;
 import geometry.Util;
 
 import java.awt.image.BufferedImage;
+
 import javaHelper.BufferedImageHelper;
 
 public class BinlinearInterpolation {
@@ -12,7 +13,7 @@ public class BinlinearInterpolation {
 	int height = 0;
 	BufferedImage target = null, source = null;
 	
-	public BufferedImage generate( BufferedImage target, final BufferedImage source, final Grid []fromGrid, final Grid []toGrid) {
+	public BufferedImage generate( BufferedImage target, final BufferedImage source, final Lattice originalLattice, final Lattice currentLattice) {
 		
 		long startTime = System.nanoTime();
 		
@@ -34,12 +35,16 @@ public class BinlinearInterpolation {
 			}
 		}
 		
-		if ( fromGrid.length != toGrid.length ) System.err.println( "ERROR" );
+		int xCount = originalLattice.getXCount();
+		int yCount = originalLattice.getYCount();
 		
-		for ( int i = 0; i < toGrid.length; ++i ) {
-			Grid fg = fromGrid[i];
-			Grid tg = toGrid[i];
-			fillGrid( tg.p, fg.p );
+		if ( currentLattice.getXCount() != xCount ) System.err.println( "ERROR" );
+		if ( currentLattice.getYCount() != yCount ) System.err.println( "ERROR" );
+		
+		for ( int i = 1; i < xCount; ++i ) {
+			for ( int j = 1; j < yCount; ++j ) {
+				fillGrid( currentLattice.getRect(i, j), originalLattice.getRect(i, j) );
+			}
 		}
 		
 		long finishTime = System.nanoTime();

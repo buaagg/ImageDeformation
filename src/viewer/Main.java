@@ -1,17 +1,14 @@
 package viewer;
-import geometry.Grid;
+//import geometry.Grid;
 import geometry.Lattice;
 import geometry.Point;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Vector;
 
 import javaHelper.BufferedImageHelper;
 
@@ -35,18 +32,18 @@ public class Main extends JFrame {
 	public ConvertKeyListener convertKeyListener = new ConvertKeyListener(this);
 	
 	public boolean isGridVisible = true;
-	BufferedImage currentImg;
-	BufferedImage orginalImg;
+	BufferedImage currentImage;
+	BufferedImage originalImage;
 	int width, height;
 	public JLabel label;
 	public int stage;
-	Point []orginalKeyPoints;
+	Point []originalKeyPoints;
 	Point []currentKeyPoints = new Point[0];
 
-	Grid  []originalGrid, currentGrid;
 	int gridCountX, gridCountY;
 	
 	Lattice currentLattice = null;
+	Lattice originalLattice = null;
 	
 	public Main() {
 		
@@ -113,44 +110,24 @@ public class Main extends JFrame {
 		this.width = (int)(src.getWidth() * scale);
 		this.height = (int)(src.getHeight() * scale);
 				
-		currentImg = BufferedImageHelper.newBufferdImage(width, height);
+		currentImage = BufferedImageHelper.newBufferdImage(width, height);
 		
-		Graphics2D graph = (Graphics2D) currentImg.getGraphics();
+		Graphics2D graph = (Graphics2D) currentImage.getGraphics();
 		graph.scale(scale, scale);
 		graph.drawImage( src, 0, 0, null );
 		graph.dispose();
 		
-		label = new JLabel( new ImageIcon(currentImg) );
+		label = new JLabel( new ImageIcon(currentImage) );
 
 		JPanel panel = new JPanel();
-		panel.setSize( currentImg.getWidth() ,  currentImg.getHeight() );
+		panel.setSize( currentImage.getWidth() ,  currentImage.getHeight() );
 		panel.add( label );
 		
 		this.getContentPane().add( panel );
-		this.setSize( currentImg.getWidth() + 30, currentImg.getHeight() + 50  );  
+		this.setSize( currentImage.getWidth() + 30, currentImage.getHeight() + 50  );  
 		this.setVisible(true);  		
 		
-		Vector<Grid> vg = new Vector<Grid>();
-		gridCountX = 0;
-		for ( int i = 0; i < currentImg.getWidth(); i += Config.gridLength ) {
-			++gridCountX;
-			for ( int j = 0; j < currentImg.getHeight(); j += Config.gridLength ) {
-				vg.add(
-						new Grid( 
-								new Point(i, j), 
-								new Point(i + Config.gridLength, j),
-								new Point(i + Config.gridLength, j + Config.gridLength), 
-								new Point(i, j + Config.gridLength)
-						)
-				);
-			}
-		}
-		gridCountY = vg.size() / gridCountX;
-		currentGrid = vg.toArray( new Grid[ vg.size() ] );
-		
 		currentLattice = new Lattice( width, height, Config.gridLength );
-		
-		System.out.println( "Totally splited into " + currentGrid.length + " grids.");
 		
 		this.draw();
 		
@@ -164,9 +141,9 @@ public class Main extends JFrame {
 		draw( null, false );
 	}
 	
-	public void draw(Point activeKeyPoint, boolean isActiveKeyPointSpecial) { // draw currentImg, currentGrid, and currentKeyPoints
+	public void draw(Point activeKeyPoint, boolean isActiveKeyPointSpecial) { // draw currentImg, currentLattice, and currentKeyPoints
 		
-		BufferedImage displayImg = DisplayImageFactory.getDisplayImage(currentImg, currentGrid, currentKeyPoints, activeKeyPoint, isActiveKeyPointSpecial, isGridVisible);
+		BufferedImage displayImg = DisplayImageFactory.getDisplayImage(currentImage, currentLattice, currentKeyPoints, activeKeyPoint, isActiveKeyPointSpecial, isGridVisible);
 		
 		this.label.setIcon( new ImageIcon(displayImg) );		
 		

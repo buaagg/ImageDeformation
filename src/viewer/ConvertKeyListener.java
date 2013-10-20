@@ -1,7 +1,6 @@
 package viewer;
 
-
-import geometry.Grid;
+import geometry.Lattice;
 import geometry.Point;
 import imageDeformation.AffineDeformation;
 import imageDeformation.RigidDeformation;
@@ -26,13 +25,15 @@ class ConvertKeyListener implements KeyListener {
 			parent.label.addMouseListener( parent.stage2MouseAdapter );
 			parent.label.addMouseMotionListener( parent.stage2MouseAdapter );
 			
-			parent.orginalKeyPoints = parent.currentKeyPoints;
-			parent.currentKeyPoints = new Point[ parent.orginalKeyPoints.length ];
-			for ( int i = 0; i < parent.orginalKeyPoints.length; ++i )
-				parent.currentKeyPoints[i] = parent.orginalKeyPoints[i];
-
-			parent.originalGrid = parent.currentGrid;
-			parent.orginalImg = parent.currentImg;
+			do {
+				parent.originalKeyPoints = parent.currentKeyPoints;
+				parent.currentKeyPoints = new Point[ parent.originalKeyPoints.length ];
+				for ( int i = 0; i < parent.originalKeyPoints.length; ++i )
+					parent.currentKeyPoints[i] = parent.originalKeyPoints[i];
+			} while (false);
+			
+			parent.originalLattice = new Lattice( parent.currentLattice );
+			parent.originalImage = parent.currentImage;
 		}
 
 		if ( e.getKeyChar() == KeyEvent.VK_SPACE ) {
@@ -46,31 +47,20 @@ class ConvertKeyListener implements KeyListener {
 		
 		if ( isKey1 || isKey2 || isKey3 ) {
 			if ( isKey1 ) {
-				Config.imageDeformation = new AffineDeformation();
+				javaHelper.DeformationHelper.setDeformationHandler(new AffineDeformation());
 				parent.setTitle("AffineDeformation");				
 			}
 			if ( isKey2 ) {
-				Config.imageDeformation = new SimilarityDeformation();
+				javaHelper.DeformationHelper.setDeformationHandler(new SimilarityDeformation());
 				parent.setTitle("SimilarityDeformation");				
 			}
 			if ( isKey3 ) {
-				Config.imageDeformation = new RigidDeformation();
+				javaHelper.DeformationHelper.setDeformationHandler(new RigidDeformation());
 				parent.setTitle("RigidDeformation");				
 			}
 			if ( parent.stage == 2 ) {
-				Grid []newG = new Grid[ parent.originalGrid.length ];
-				for ( int i = 0; i < parent.originalGrid.length; ++i ) {
-					newG[i] = new Grid(
-							Config.imageDeformation.query( parent.originalGrid[i].p[0] , parent.orginalKeyPoints, parent.currentKeyPoints, Config.alpha),
-							Config.imageDeformation.query( parent.originalGrid[i].p[1] , parent.orginalKeyPoints, parent.currentKeyPoints, Config.alpha),
-							Config.imageDeformation.query( parent.originalGrid[i].p[2] , parent.orginalKeyPoints, parent.currentKeyPoints, Config.alpha),
-							Config.imageDeformation.query( parent.originalGrid[i].p[3] , parent.orginalKeyPoints, parent.currentKeyPoints, Config.alpha)
-					);
-				}
-				
-				parent.currentGrid = newG;
-				
-				parent.currentImg = Config.binlinearInterpolation.generate(parent.currentImg, parent.orginalImg, parent.originalGrid, parent.currentGrid);		
+				parent.currentLattice = javaHelper.DeformationHelper.transform(parent.currentLattice, parent.originalLattice, parent.originalKeyPoints, parent.currentKeyPoints);				
+				parent.currentImage = Config.binlinearInterpolation.generate(parent.currentImage, parent.originalImage, parent.originalLattice, parent.currentLattice);		
 
 				parent.draw( );		
 			}

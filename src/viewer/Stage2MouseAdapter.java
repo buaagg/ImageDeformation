@@ -1,5 +1,5 @@
 package viewer;
-import geometry.Grid;
+
 import geometry.Lattice;
 import geometry.Point;
 
@@ -7,9 +7,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 class Stage2MouseAdapter extends MouseAdapter {
-	
-	public void mouseClicked(MouseEvent e) {	
-	}
 	
 	public void mousePressed(MouseEvent e) {		
 		if ( javax.swing.SwingUtilities.isLeftMouseButton(e) ) {
@@ -26,7 +23,7 @@ class Stage2MouseAdapter extends MouseAdapter {
 		}
 	}
 	
-	boolean gridValid(Grid[] g, int gridCountX, int gridCountY) {
+	boolean gridValid(Lattice nextLattice, int gridCountX, int gridCountY) {
 		for (int i = 0; i < gridCountX; ++i) {
 			for (int j = 0; j < gridCountY; ++j) {
 				
@@ -36,24 +33,20 @@ class Stage2MouseAdapter extends MouseAdapter {
 	}
 		
 	void work(Point q) {		
-		parent.currentKeyPoints[currentPointIndex] = q;
-		
-		Grid []newG = new Grid[ parent.originalGrid.length ];
-		for ( int i = 0; i < parent.originalGrid.length; ++i ) {
-			newG[i] = new Grid(
-					Config.imageDeformation.query( parent.originalGrid[i].p[0] , parent.orginalKeyPoints, parent.currentKeyPoints, Config.alpha),
-					Config.imageDeformation.query( parent.originalGrid[i].p[1] , parent.orginalKeyPoints, parent.currentKeyPoints, Config.alpha),
-					Config.imageDeformation.query( parent.originalGrid[i].p[2] , parent.orginalKeyPoints, parent.currentKeyPoints, Config.alpha),
-					Config.imageDeformation.query( parent.originalGrid[i].p[3] , parent.orginalKeyPoints, parent.currentKeyPoints, Config.alpha)
-			);
+		parent.currentKeyPoints[currentPointIndex] = q;		
+
+		Lattice futureLattice = javaHelper.DeformationHelper.transform(null, parent.originalLattice, parent.originalKeyPoints, parent.currentKeyPoints);
+		if ( futureLattice.isValid() ) {
+			parent.currentLattice = futureLattice;
+			parent.currentImage = Config.binlinearInterpolation.generate(parent.currentImage, parent.originalImage, parent.originalLattice, parent.currentLattice);				
+			parent.draw(q, true );		
+		} else {
+			parent.draw(q, false );					
 		}
 		
-		Lattice nextLattice = new Lattice( parent.currentLattice.getSize() );
-		
-		parent.currentGrid = newG;		
-		parent.currentImg = Config.binlinearInterpolation.generate(parent.currentImg, parent.orginalImg, parent.originalGrid, parent.currentGrid);		
-		
-		parent.draw(q, true );		
+//		parent.currentLattice = javaHelper.DeformationHelper.transform(parent.currentLattice, parent.originalLattice, parent.originalKeyPoints, parent.currentKeyPoints);
+//		parent.currentImage = Config.binlinearInterpolation.generate(parent.currentImage, parent.originalImage, parent.originalLattice, parent.currentLattice);				
+
 	}
 	public void mouseDragged(MouseEvent e) {
 		if ( javax.swing.SwingUtilities.isLeftMouseButton(e) ) {

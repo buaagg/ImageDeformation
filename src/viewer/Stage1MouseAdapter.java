@@ -8,7 +8,6 @@ class Stage1MouseAdapter extends MouseAdapter {
 	public void mouseClicked(MouseEvent e) {
 		if ( javax.swing.SwingUtilities.isLeftMouseButton(e) ) {
 			Point []p = parent.currentKeyPoints;
-	//		System.out.printf( "Silly Clicked on (%d, %d)%n", e.getX(), e.getY() );	
 			
 			Point q = new Point( e.getX(), e.getY() );
 			for ( int i = 0; i < p.length; ++i ) {
@@ -29,7 +28,6 @@ class Stage1MouseAdapter extends MouseAdapter {
 		if ( javax.swing.SwingUtilities.isLeftMouseButton(e) ) {
 
 			Point []p = parent.currentKeyPoints;
-	//		System.out.printf( "Silly Pressed on (%d, %d)%n", e.getX(), e.getY() );	
 			
 			Point q = new Point( e.getX(), e.getY() );
 			for ( int i = 0; i < p.length; ++i ) {
@@ -45,7 +43,7 @@ class Stage1MouseAdapter extends MouseAdapter {
 		}
 	}
 	public void mouseReleased(MouseEvent e) {
-//		System.out.printf( "Silly Released on (%d, %d)%n", e.getX(), e.getY() );	
+
 		if ( javax.swing.SwingUtilities.isLeftMouseButton(e) ) {		
 			Point q = new Point( e.getX(), e.getY() );
 			if ( ok(q) ) {
@@ -73,9 +71,7 @@ class Stage1MouseAdapter extends MouseAdapter {
 	
 	public void mouseDragged(MouseEvent e) {
 		if ( javax.swing.SwingUtilities.isLeftMouseButton(e) ) {
-	//		System.out.printf( "Silly Drag on (%d, %d)%n", e.getX(), e.getY() );
-			Point q = new Point( e.getX(), e.getY() );
-			
+			Point q = new Point( e.getX(), e.getY() );			
 			parent.draw( q, ok(q) );
 		}
 	}
